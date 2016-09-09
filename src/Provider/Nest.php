@@ -40,6 +40,7 @@ class Nest extends AbstractProvider
      * @param  AccessToken $token
      *
      * @return string
+     *
      * @throws Exception\ResourceOwnerException
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token)
@@ -97,6 +98,7 @@ class Nest extends AbstractProvider
      * @param object $response
      * @param AccessToken $token
      * @return League\OAuth2\Client\Provider\ResourceOwnerInterface
+     *
      * @throws Exception\ResourceOwnerException
      */
     protected function createResourceOwner(array $response, AccessToken $token)
