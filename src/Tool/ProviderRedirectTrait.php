@@ -18,6 +18,13 @@ trait ProviderRedirectTrait
     protected $redirectLimit = 2;
 
     /**
+     * Returns the HTTP client instance.
+     *
+     * @return GuzzleHttp\ClientInterface
+     */
+    abstract public function getHttpClient();
+
+    /**
      * Retrieves current redirect limit.
      *
      * @return integer
@@ -35,11 +42,11 @@ trait ProviderRedirectTrait
      */
     protected function sendRequest(RequestInterface $request)
     {
-        $attempts = 0;
-
+        $response = null;
         $requestOptions = [
             'allow_redirects' => false
         ];
+        $attempts = 0;
 
         $isRedirect = function (ResponseInterface $response) {
             $statusCode = $response->getStatusCode();
@@ -51,7 +58,6 @@ trait ProviderRedirectTrait
             while ($attempts < $this->redirectLimit) {
                 $attempts++;
                 $response = $this->getHttpClient()->send($request, $requestOptions);
-                $statusCode = $response->getStatusCode();
 
                 if ($isRedirect($response)) {
                     $redirectUrl = new Uri($response->getHeader('Location')[0]);
@@ -80,7 +86,7 @@ trait ProviderRedirectTrait
             throw new InvalidArgumentException('setRedirectLimit function only accepts numeric values.');
         }
 
-        $this->redirectLimit = $limit;
+        $this->redirectLimit = (integer) $limit;
 
         return $this;
     }
