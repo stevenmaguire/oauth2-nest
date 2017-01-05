@@ -35,6 +35,20 @@ trait ProviderRedirectTrait
     }
 
     /**
+     * Determines if a given response is a redirect.
+     *
+     * @param  ResponseInterface  $response
+     *
+     * @return boolean
+     */
+    protected function isRedirect(ResponseInterface $response)
+    {
+        $statusCode = $response->getStatusCode();
+
+        return $statusCode > 300 && $statusCode < 400 && $response->hasHeader('Location');
+    }
+
+    /**
      * Sends a request instance and returns a response instance.
      *
      * @param  RequestInterface $request
@@ -48,18 +62,12 @@ trait ProviderRedirectTrait
         ];
         $attempts = 0;
 
-        $isRedirect = function (ResponseInterface $response) {
-            $statusCode = $response->getStatusCode();
-
-            return $statusCode > 300 && $statusCode < 400 && $response->hasHeader('Location');
-        };
-
         try {
             while ($attempts < $this->redirectLimit) {
                 $attempts++;
                 $response = $this->getHttpClient()->send($request, $requestOptions);
 
-                if ($isRedirect($response)) {
+                if ($this->isRedirect($response)) {
                     $redirectUrl = new Uri($response->getHeader('Location')[0]);
                     $request = $request->withUri($redirectUrl);
                 } else {
