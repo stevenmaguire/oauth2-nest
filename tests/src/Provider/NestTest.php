@@ -134,4 +134,20 @@ class NestTest extends \PHPUnit_Framework_TestCase
         $this->provider->setHttpClient($client);
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
+
+    public function testSetRedirectLimit()
+    {
+        $redirectLimit = rand(3,5);
+        $this->provider->setRedirectLimit($redirectLimit);
+        $this->assertEquals($redirectLimit, $this->provider->getRedirectLimit());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     **/
+    public function testSetRedirectLimitThrowsExceptionWhenNonNumericProvided()
+    {
+        $redirectLimit = uniqid();
+        $this->provider->setRedirectLimit($redirectLimit);
+    }
 }

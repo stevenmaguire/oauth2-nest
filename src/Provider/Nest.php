@@ -7,10 +7,11 @@ use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
 use Psr\Http\Message\ResponseInterface;
+use Stevenmaguire\OAuth2\Client\Tool\ProviderRedirectTrait;
 
 class Nest extends AbstractProvider
 {
-    use BearerAuthorizationTrait;
+    use BearerAuthorizationTrait, ProviderRedirectTrait;
 
     /**
      * Get authorization url to begin OAuth flow
