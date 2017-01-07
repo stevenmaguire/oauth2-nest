@@ -18,6 +18,36 @@ trait ProviderRedirectTrait
     protected $redirectLimit = 2;
 
     /**
+     * Retrieves a response for a given request and retrieves subsequent
+     * responses, with authorization headers, if a redirect is detected.
+     *
+     * @param  RequestInterface $request
+     * @return ResponseInterface
+     * @throws BadResponseException
+     */
+    protected function followRequestRedirects(RequestInterface $request)
+    {
+        $response = null;
+        $attempts = 0;
+
+        while ($attempts < $this->redirectLimit) {
+            $attempts++;
+            $response = $this->getHttpClient()->send($request, [
+                'allow_redirects' => false
+            ]);
+
+            if ($this->isRedirect($response)) {
+                $redirectUrl = new Uri($response->getHeader('Location')[0]);
+                $request = $request->withUri($redirectUrl);
+            } else {
+                break;
+            }
+        }
+
+        return $response;
+    }
+
+    /**
      * Returns the HTTP client instance.
      *
      * @return GuzzleHttp\ClientInterface
@@ -56,24 +86,8 @@ trait ProviderRedirectTrait
      */
     protected function sendRequest(RequestInterface $request)
     {
-        $response = null;
-        $requestOptions = [
-            'allow_redirects' => false
-        ];
-        $attempts = 0;
-
         try {
-            while ($attempts < $this->redirectLimit) {
-                $attempts++;
-                $response = $this->getHttpClient()->send($request, $requestOptions);
-
-                if ($this->isRedirect($response)) {
-                    $redirectUrl = new Uri($response->getHeader('Location')[0]);
-                    $request = $request->withUri($redirectUrl);
-                } else {
-                    break;
-                }
-            }
+            $response = $this->followRequestRedirects($request);
         } catch (BadResponseException $e) {
             $response = $e->getResponse();
         }
