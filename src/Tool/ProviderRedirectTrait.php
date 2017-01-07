@@ -90,11 +90,15 @@ trait ProviderRedirectTrait
      */
     public function setRedirectLimit($limit)
     {
-        if (!is_numeric($limit)) {
-            throw new InvalidArgumentException('setRedirectLimit function only accepts numeric values.');
+        if (!is_int($limit)) {
+            throw new InvalidArgumentException('redirectLimit must be an integer.');
         }
 
-        $this->redirectLimit = (integer) $limit;
+        if ($limit < 1) {
+            throw new InvalidArgumentException('redirectLimit must be greater than or equal to one.');
+        }
+
+        $this->redirectLimit = $limit;
 
         return $this;
     }

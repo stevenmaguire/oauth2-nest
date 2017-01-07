@@ -32,6 +32,24 @@ class ProviderRedirectTraitTest extends \PHPUnit_Framework_TestCase
         $this->provider->setRedirectLimit($redirectLimit);
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     **/
+    public function testSetRedirectLimitThrowsExceptionWhenZeroProvided()
+    {
+        $redirectLimit = 0;
+        $this->provider->setRedirectLimit($redirectLimit);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     **/
+    public function testSetRedirectLimitThrowsExceptionWhenNegativeIntegerProvided()
+    {
+        $redirectLimit = -10;
+        $this->provider->setRedirectLimit($redirectLimit);
+    }
+
     public function testClientLimitsRedirectResponse()
     {
         $redirectLimit = rand(3,5);
