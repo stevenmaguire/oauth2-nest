@@ -81,10 +81,13 @@ trait ProviderRedirectTrait
     /**
      * Sends a request instance and returns a response instance.
      *
+     * WARNING: This method does not attempt to catch exceptions caused by HTTP
+     * errors! It is recommended to wrap this method in a try/catch block.
+     *
      * @param  RequestInterface $request
      * @return ResponseInterface
      */
-    protected function sendRequest(RequestInterface $request)
+    public function getResponse(RequestInterface $request)
     {
         try {
             $response = $this->followRequestRedirects($request);

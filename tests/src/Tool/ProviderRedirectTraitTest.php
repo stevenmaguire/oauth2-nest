@@ -73,7 +73,7 @@ class ProviderRedirectTraitTest extends \PHPUnit_Framework_TestCase
 
     public function testClientErrorReturnsResponse()
     {
-        $status = rand(301,399);
+        $status = rand(400, 500);
         $result = ['foo' => 'bar'];
         $request = m::mock('Psr\Http\Message\RequestInterface');
         $response = m::mock('Psr\Http\Message\ResponseInterface');
@@ -88,10 +88,9 @@ class ProviderRedirectTraitTest extends \PHPUnit_Framework_TestCase
         );
 
         $client = m::mock('GuzzleHttp\ClientInterface');
-        $client->shouldReceive('send')
-            ->andThrow($exception);
+        $client->shouldReceive('send')->andThrow($exception);
         $this->provider->setHttpClient($client);
         $finalResponse = $this->provider->getResponse($request);
-        $this->assertEquals($result, $finalResponse);
+        $this->assertEquals($response, $finalResponse);
     }
 }
