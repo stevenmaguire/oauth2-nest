@@ -39,4 +39,4 @@ $ ./vendor/bin/phpunit
 $ ./vendor/bin/phpcs src --standard=psr2 -sp
 ```
 
-**Happy coding**!
+**Happy coding**!!
